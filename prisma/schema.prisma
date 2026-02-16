@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Fintech {
+  id                    String   @id @default(cuid())
+  name                  String   @unique
+  slug                  String   @unique
+  logo                  String?
+  logoColor             String   @default("#D0A0B7")
+  abbrev                String
+  description           String
+  longDescription       String?
+  
+  founded               Int?
+  headquarters          String?
+  country               String
+  region                String
+  website               String?
+  
+  category              String
+  subcategory           String?
+  
+  annualVolume          Float?
+  totalUsers            Int?
+  monthlyActiveUsers    Int?
+  employees             Int?
+  
+  totalFunding          Float?
+  lastFundingRound      String?
+  lastFundingAmount     Float?
+  valuation             Float?
+  investors             String[]
+  
+  painPoints            String[]
+  
+  seismicStatus         String   @default("potential")
+  integrationNote       String?
+  privacyScore          Int      @default(0)
+  integrationPotential  Int      @default(50)
+  
+  primaryMarkets        String[]
+  usersByCountry        Json?
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
