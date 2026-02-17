@@ -1,39 +1,16 @@
-import { prisma } from '@/lib/db'
 import Dashboard from '@/components/Dashboard'
+import fintechsData from '@/data/fintechs.json'
 
-// Force dynamic rendering - don't try to connect to DB at build time
-export const dynamic = 'force-dynamic'
-
-async function getFintechs() {
-  const fintechs = await prisma.fintech.findMany({
-    orderBy: [
-      { seismicStatus: 'asc' },
-      { annualVolume: 'desc' }
-    ]
-  })
-  return fintechs
-}
-
-async function getStats() {
-  const fintechs = await prisma.fintech.findMany()
+export default function Home() {
+  const fintechs = fintechsData as any[]
   
-  const totalVolume = fintechs.reduce((sum, f) => sum + (f.annualVolume || 0), 0)
-  const totalUsers = fintechs.reduce((sum, f) => sum + (f.totalUsers || 0), 0)
-  const integrated = fintechs.filter(f => f.seismicStatus === 'integrated').length
-  const totalFunding = fintechs.reduce((sum, f) => sum + (f.totalFunding || 0), 0)
-  
-  return {
-    totalVolume,
-    totalUsers,
+  const stats = {
+    totalVolume: fintechs.reduce((sum: number, f: any) => sum + (f.annualVolume || 0), 0),
+    totalUsers: fintechs.reduce((sum: number, f: any) => sum + (f.totalUsers || 0), 0),
     totalFintechs: fintechs.length,
-    integrated,
-    totalFunding
+    integrated: fintechs.filter((f: any) => f.seismicStatus === 'integrated').length,
+    totalFunding: fintechs.reduce((sum: number, f: any) => sum + (f.totalFunding || 0), 0)
   }
-}
-
-export default async function Home() {
-  const fintechs = await getFintechs()
-  const stats = await getStats()
   
   return <Dashboard fintechs={fintechs} stats={stats} />
 }
