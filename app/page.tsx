@@ -1,6 +1,9 @@
 import { prisma } from '@/lib/db'
 import Dashboard from '@/components/Dashboard'
 
+// Force dynamic rendering - don't try to connect to DB at build time
+export const dynamic = 'force-dynamic'
+
 async function getFintechs() {
   const fintechs = await prisma.fintech.findMany({
     orderBy: [
